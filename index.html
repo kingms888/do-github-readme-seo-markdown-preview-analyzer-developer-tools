@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>GitHub README SEO & Markdown Preview Analyzer · dev tool for Etsy & Shopify sellers</title>
+  <meta name="description" content="Analyze your GitHub README for SEO readiness and preview rendered Markdown. Built for Etsy sellers, Shopify sellers, and developer tool creators.">
+  <meta name="keywords" content="etsy sellers, shopify sellers, csv/json tools, developer tools, amazon sellers, github readme seo, markdown preview, api endpoint generator, github readme seo & markdown preview analyzer (developer tools)">
+  <meta name="author" content="README tools for makers">
+  <meta name="robots" content="index, follow">
+  <!-- Open Graph -->
+  <meta property="og:title" content="GitHub README SEO & Markdown Preview Analyzer">
+  <meta property="og:description" content="Real‑time SEO analysis + live Markdown preview. Perfect for Etsy & Shopify sellers building developer tools.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://readmeseo.example.com">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f6f8fa;
+      color: #1f2328;
+      padding: 1.2rem;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+      padding: 1.8rem 1.5rem;
+    }
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem 0.8rem;
+      margin-bottom: 0.25rem;
+    }
+    .badge {
+      background: #ddf4ff;
+      color: #0969da;
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      white-space: nowrap;
+    }
+    .subhead {
+      color: #656d76;
+      font-size: 1rem;
+      margin-bottom: 1.8rem;
+      border-left: 4px solid #2da44e;
+      padding-left: 0.9rem;
+    }
+    .tool-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.8rem;
+    }
+    @media (max-width: 700px) {
+      .tool-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      h1 { font-size: 1.6rem; }
+    }
+    .editor-panel, .preview-panel {
+      background: #f9fafc;
+      border-radius: 20px;
+      padding: 1.2rem 1.2rem 1.5rem;
+      border: 1px solid #e1e4e8;
+    }
+    .panel-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .seo-stats {
+      background: #e6f7e6;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #1a7f37;
+    }
+    textarea {
+      width: 100%;
+      min-height: 280px;
+      padding: 1rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.9rem;
+      border: 1px solid #d0d7de;
+      border-radius: 16px;
+      background: white;
+      resize: vertical;
+      transition: border 0.15s;
+    }
+    textarea:focus {
+      outline: 2px solid #0969da;
+      outline-offset: -1px;
+      border-color: transparent;
+    }
+    .meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.6rem;
+      gap: 0.5rem;
+    }
+    .word-count {
+      font-size: 0.85rem;
+      color: #57606a;
+    }
+    .seo-indicators {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem 1.2rem;
+      background: #f0f2f5;
+      padding: 0.6rem 1rem;
+      border-radius: 40px;
+      font-size: 0.85rem;
+    }
+    .indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 10px;
+    }
+    .dot.good { background: #2da44e; }
+    .dot.warn { background: #d4920b; }
+    .dot.miss { background: #cf222e; }
+    .preview-box {
+      background: white;
+      border: 1px solid #d0d7de;
+      border-radius: 16px;
+      padding: 1rem 1.2rem;
+      min-height: 280px;
+      max-height: 500px;
+      overflow-y: auto;
+      word-wrap: break-word;
+    }
+    .preview-box h1, .preview-box h2, .preview-box h3 {
+      margin: 0.5rem 0 0.2rem;
+    }
+    .preview-box p { margin: 0.5rem 0; }
+    .preview-box code {
+      background: #e8eaed;
+      padding: 0.1rem 0.3rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+    .preview-box pre {
+      background: #f0f2f5;
+      padding: 0.8rem;
+      border-radius: 12px;
+      overflow-x: auto;
+    }
+    .preview-box img { max-width: 100%; border-radius: 8px; }
+    .preview-box ul, .preview-box ol { padding-left: 1.5rem; }
+    .ad-placeholder {
+      background: #f6f8fa;
+      border: 1px dashed #bbc0c5;
+      border-radius: 20px;
+      padding: 1rem 1.2rem;
+      margin: 2rem 0 1.2rem;
+      text-align: center;
+      color: #57606a;
+      font-size: 0.9rem;
+    }
+    .ad-placeholder strong {
+      color: #1f2328;
+    }
+    .affiliate-resources {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      background: #f0f6fc;
+      border-radius: 20px;
+      padding: 1.2rem 1.5rem;
+      margin: 1.5rem 0 1rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .affiliate-resources span {
+      font-weight: 500;
+    }
+    .affiliate-links a {
+      display: inline-block;
+      background: white;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      text-decoration: none;
+      color: #0969da;
+      border: 1px solid #d0d7de;
+      font-size: 0.9rem;
+      margin: 0.2rem 0.4rem;
+    }
+    .affiliate-links a:hover {
+      background: #e6edf5;
+    }
+    .privacy-note {
+      background: #fcf8e8;
+      border-radius: 40px;
+      padding: 0.5rem 1.2rem;
+      font-size: 0.8rem;
+      color: #5b4b1a;
+      display: inline-block;
+      margin-top: 1.5rem;
+      border: 1px solid #eedb9a;
+    }
+    .footer-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.8rem;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #e1e4e8;
+      margin: 1.2rem 0;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>
+      📖 README SEO & Markdown Preview
+      <span class="badge">dev tool · Etsy & Shopify</span>
+    </h1>
+    <div class="subhead">
+      ⚡ Real‑time SEO analysis + rendered preview — optimize your GitHub README for makers & sellers
+    </div>
+  </header>
+
+  <!-- Core tool -->
+  <div class="tool-grid">
+    <!-- left: editor + SEO -->
+    <div class="editor-panel">
+      <div class="panel-title">
+        <span>✏️ Markdown editor</span>
+        <span class="seo-stats" id="seoScoreBadge">SEO: –</span>
+      </div>
+      <textarea id="mdInput" placeholder="Paste or type your GitHub README Markdown here …"># Awesome Dev Tool
+
+Boost your **Etsy** or **Shopify** store with CSV/JSON tools.
+
+- Lightweight API endpoint generator
+- SEO‑friendly headings
+- `npm install @your/pkg`
+
+> Built for makers, by makers.</textarea>
+      <div class="meta-bar">
+        <span class="word-count" id="wordCountDisplay">~ 0 words</span>
+        <div class="seo-indicators" id="seoIndicators">
+          <span class="indicator"><span class="dot good" id="h1Dot"></span> H1</span>
+          <span class="indicator"><span class="dot good" id="h2Dot"></span> H2</span>
+          <span class="indicator"><span class="dot good" id="imgDot"></span> Img alt</span>
+          <span class="indicator"><span class="dot good" id="wordDot"></span> Words</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- right: preview -->
+    <div class="preview-panel">
+      <div class="panel-title">
+        <span>👁️ Rendered preview</span>
+        <span style="font-size:0.8rem; color:#57606a;">GitHub‑flavored</span>
+      </div>
+      <div class="preview-box" id="previewContainer">
+        <!-- dynamic preview -->
+      </div>
+    </div>
+  </div>
+
+  <!-- AD PLACEHOLDER (visible) -->
+  <div class="ad-placeholder">
+    <strong>📢 Promote your dev tool here</strong> — reach Etsy & Shopify sellers. <span style="color:#0969da;">Contact: ads@readmeseo.example</span> (placeholder)
+  </div>
+
+  <!-- AFFILIATE / RESOURCE SECTION -->
+  <div class="affiliate-resources">
+    <span>🔗 Resources for sellers & developers</span>
+    <div class="affiliate-links">
+      <a href="#" rel="nofollow sponsored" target="_blank">📦 CSV/JSON toolkit</a>
+      <a href="#" rel="nofollow sponsored" target="_blank">⚡ API endpoint generator</a>
+      <a href="#" rel="nofollow sponsored" target="_blank">📘 GitHub SEO guide</a>
+    </div>
+  </div>
+
+  <!-- Privacy note + metrics -->
+  <div class="footer-meta">
+    <div class="privacy-note">
+      🔒 Privacy: events may be counted anonymously for product improvement. No personal data collected.
+    </div>
+    <span style="font-size: 0.75rem; color: #6e7681;">v1.0 · #readmeseo</span>
+  </div>
+  <hr>
+  <div style="font-size:0.8rem; color:#656d76; display:flex; flex-wrap:wrap; gap:0.5rem;">
+    <span>✨ Keywords: etsy sellers, shopify sellers, csv/json tools, developer tools, amazon sellers, github readme seo, markdown preview, api endpoint generator</span>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- DOM refs ----------
+    const mdInput = document.getElementById('mdInput');
+    const previewContainer = document.getElementById('previewContainer');
+    const wordCountDisplay = document.getElementById('wordCountDisplay');
+    const seoScoreBadge = document.getElementById('seoScoreBadge');
+    const h1Dot = document.getElementById('h1Dot');
+    const h2Dot = document.getElementById('h2Dot');
+    const imgDot = document.getElementById('imgDot');
+    const wordDot = document.getElementById('wordDot');
+
+    // ---------- lightweight Markdown renderer (GitHub flavored subset) ----------
+    function renderMarkdown(md) {
+      if (!md) return '<p style="color:#6e7681;"><em>✨ start typing markdown …</em></p>';
+      let html = md
+        // escape html entities (avoid injection)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        // images (before links) ![alt](url)
+        .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%;border-radius:8px;" loading="lazy">')
+        // links [text](url)
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+        // bold **text** or __text__
+        .replace(/\*\*(\S.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/__(\S.*?)__/g, '<strong>$1</strong>')
+        // italic *text* or _text_
+        .replace(/\*(\S.*?)\*/g, '<em>$1</em>')
+        .replace(/_(\S.*?)_/g, '<em>$1</em>')
+        // inline code `code`
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        // headings (needs to be after bold/italic to avoid interference)
+        .replace(/^###### (.*$)/gm, '<h6>$1</h6>')
+        .replace(/^##### (.*$)/gm, '<h5>$1</h5>')
+        .replace(/^#### (.*$)/gm, '<h4>$1</h4>')
+        .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+        .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+        .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+        // horizontal rule
+        .replace(/^---$/gm, '<hr>')
+        // blockquote >
+        .replace(/^> (.*$)/gm, '<blockquote>$1</blockquote>')
+        // unordered list * or -
+        .replace(/^[\*\-] (.*$)/gm, '<li>$1</li>')
+        // ordered list 1. 
+        .replace(/^\d+\. (.*$)/gm, '<li>$1</li>')
+        // paragraphs: double newline
+        .replace(/\n\n/g, '</p><p>')
+        // single newline -> space (preserve)
+        .replace(/\n/g, ' ')
+        // clean multiple <li> wrap into <ul> (simple heuristic)
+        .replace(/(<li>.*?<\/li>)/gs, '<ul>$1</ul>')
+        // fix nested <ul><ul> (remove duplicates)
+        .replace(/<\/ul>\s*<ul>/g, '');
+      // wrap in paragraph if not starting with block tag
+      if (!html.startsWith('<h') && !html.startsWith('<ul') && !html.startsWith('<blockquote') && !html.startsWith('<hr')) {
+        html = '<p>' + html + '</p>';
+      }
+      // ensure blockquote wrapping
+      html = html.replace(/<blockquote>(.*?)<\/blockquote>/gs, '<blockquote>$1</blockquote>');
+      return html;
+    }
+
+    // ---------- SEO analysis ----------
+    function analyzeSEO(text) {
+      const hasH1 = /^# .+/m.test(text);
+      const hasH2 = /^## .+/m.test(text);
+      const imgAlt = /!\[([^\]]*)\]/g;
+      let altCount = 0;
+      let emptyAlt = 0;
+      let match;
+      while ((match = imgAlt.exec(text)) !== null) {
+        altCount++;
+        if (match[1].trim() === '') emptyAlt++;
+      }
+      const imgAltOk = altCount === 0 ? true : (emptyAlt === 0); // if no images, consider ok
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      const wordCountOk = words >= 30;
+
+      return { hasH1, hasH2, imgAltOk, wordCountOk, words, altCount, emptyAlt };
+    }
+
+    // ---------- update UI ----------
+    function updateTool() {
+      const md = mdInput.value;
+      // render preview
+      const rendered = renderMarkdown(md);
+      previewContainer.innerHTML = rendered;
+
+      // word count
+      const words = md.trim() ? md.trim().split(/\s+/).length : 0;
+      wordCountDisplay.textContent = `~ ${words} words`;
+
+      // SEO analysis
+      const seo = analyzeSEO(md);
+      // update dots
+      h1Dot.className = 'dot ' + (seo.hasH1 ? 'good' : 'miss');
+      h2Dot.className = 'dot ' + (seo.hasH2 ? 'good' : 'warn');
+      imgDot.className = 'dot ' + (seo.imgAltOk ? 'good' : 'warn');
+      wordDot.className = 'dot ' + (seo.wordCountOk ? 'good' : 'warn');
+
+      // SEO badge
+      let score = 0;
+      if (seo.hasH1) score++;
+      if (seo.hasH2) score++;
+      if (seo.imgAltOk) score++;
+      if (seo.wordCountOk) score++;
+      const scoreLabel = score >= 3 ? '✅ Good' : (score >= 2 ? '⚠️ Fair' : '❌ Needs work');
+      seoScoreBadge.textContent = `SEO: ${scoreLabel} (${score}/4)`;
+
+      // report event (anonymized) if endpoint configured
+      reportEvent('seo_analyze', { 
+        wordCount: words,
+        h1Present: seo.hasH1,
+        h2Present: seo.hasH2,
+        imgAltOk: seo.imgAltOk,
+        score: score
+      });
+    }
+
+    // ---------- metrics reporter (lightweight) ----------
+    function reportEvent(name, payload) {
+      if (window.ORGANISM_METRICS_ENDPOINT && typeof window.ORGANISM_METRICS_ENDPOINT === 'string') {
+        try {
+          const body = JSON.stringify({ event: name, payload: payload, ts: Date.now() });
+          // use sendBeacon if available, else fallback fetch (no blocking)
+          if (navigator.sendBeacon) {
+            navigator.sendBeacon(window.ORGANISM_METRICS_ENDPOINT, body);
+          } else {
+            fetch(window.ORGANISM_METRICS_ENDPOINT, {
+              method: 'POST',
+              body: body,
+              keepalive: true,
+              mode: 'no-cors' // avoid CORS issues if endpoint is external
+            }).catch(() => {});
+          }
+        } catch (e) {
+          // silently ignore
+        }
+      }
+    }
+
+    // ---------- debounce & init ----------
+    let debounceTimer;
+    function handleInput() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(updateTool, 80);
+    }
+
+    // initial render
+    mdInput.addEventListener('input', handleInput);
+    // also run on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTool();
+    });
+
+    // expose reportEvent globally (already in scope)
+    window.reportEvent = reportEvent;
+
+    // (optional) set a dummy endpoint for demo – comment out for production.
+    // window.ORGANISM_METRICS_ENDPOINT = 'https://example.com/metrics';
+    // If you want to test, uncomment line above and see console (no error).
+    // For privacy, endpoint is not set by default.
+  })();
+</script>
+
+<!-- invisible placeholder for ORGANISM_METRICS_ENDPOINT (configurable) -->
+
+<section data-organism-discovery="hub" style="margin:32px auto 20px;max-width:1040px;padding:16px;border-top:1px solid #d9e2ec;color:#475569;font:14px/1.5 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <strong style="display:block;color:#0f172a;margin-bottom:6px">More free browser tools</strong>
+  <p style="margin:0 0 8px">This page is part of an autonomous micro-tool network. Explore the live tool directory and related utilities.</p>
+  <p style="margin:0"><a href="https://kingms888.github.io/do-digital-organism-index/" style="color:#0f766e;font-weight:700">Open the tool directory</a> </p>
+</section>
+</body>
+</html>
